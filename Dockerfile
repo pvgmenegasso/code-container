@@ -11,8 +11,10 @@ RUN apt-get update && apt-get install -y curl git build-essential \
 # Install code-server (official standalone server)
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 # Create a non-root user
-RUN useradd -m dev && passwd -d dev && adduser dev sudo
+RUN useradd -m -u 1000 dev && passwd -d dev && adduser dev sudo
+RUN chown -R dev home/dev 
 USER dev
+# RUN code-server --install-extension PedroVinciusGalloMenegasso.dark-violet-theme-vscode
 WORKDIR /home/dev/workspace
 EXPOSE 8080
 CMD ["code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none", "."]
