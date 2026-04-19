@@ -1,13 +1,25 @@
-.PHONY: build run push
+.PHONY: run push stop restart 
 DOCKERHUBUSER ?= pvgm
+CONTAINERNAME ?= code-container
+IMAGE := $(DOCKERHUBUSER)/$(CONTAINERNAME):local
+CIDFILE := .$(CONTAINERNAME)-cid
+PWD := $(shell pwd)
 
-build:
-	podman build -t $(DOCKERHUBUSER)/code-container:local .
 
-run: build
-	podman run -d --rm -p 8080:8080 $(DOCKERHUBUSER)/code-container:local
+$(CIDFILE): Dockerfile
+	podman build -t $(DOCKERHUBUSER)/$(CONTAINERNAME):local .
+	echo built > $(CIDFILE)
+
+run: $(CIDFILE)
+	podman run -d --rm -p 8080:8080 --cidfile $(CIDFILE) -v $(PWD)/container-workspace:/home/dev/workspace:z  $(IMAGE)
 
 push: build
 	# Use buildx in CI for multi-arch; local single-arch push example
 	podman login ghcr.io
-	podman push $(DOCKERHUBUSER)/my-image:local ghcr.io/$(DOCKERHUBUSER)/code-container:local
+	podman push $(DOCKERHUBUSER)/my-image:local ghcr.io/$(IMAGE)
+
+stop:
+	podman stop --cidfile $(CIDFILE)
+	rm -f $(CIDFILE)
+
+restart: stop run
