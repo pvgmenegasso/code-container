@@ -6,7 +6,8 @@ LABEL org.opencontainers.image.source="https://github.com/pvgmenegasso/code-cont
 LABEL org.opencontainers.image.licenses="MIT"
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y curl git build-essential \
-  && apt-get clean && rm -rf /var/lib/apt/lists/*
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Install code-server (official standalone server)
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 # Create a non-root user
@@ -14,5 +15,4 @@ RUN useradd -m dev && passwd -d dev && adduser dev sudo
 USER dev
 WORKDIR /home/dev/workspace
 EXPOSE 8080
-CMD ["code-server", "--bind-addr", 0.0.0.0:8080", "--auth", "none", "."]
-
+CMD ["code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none", "."]
