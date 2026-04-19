@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source="https://github.com/pvgmenegasso/code-cont
 LABEL org.opencontainers.image.licenses="MIT"
 ARG CODE_RELEASE
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y curl git build-essential sudo
+RUN apt-get update && apt-get install -y curl git build-essential
 
 # Install code-server (official standalone server)
 RUN if [ -z ${CODE_RELEASE+x} ]; then \
@@ -29,11 +29,16 @@ RUN if [ -z ${CODE_RELEASE+x} ]; then \
     /var/tmp/*
 
 # Create a non-root user
-RUN useradd -m -u 1000 dev && passwd -d dev && adduser dev sudo
-RUN chown -R dev /app/code-server
-RUN chmod -R +rwx /app/code-server/bin
+# Create non-root user
+RUN useradd -m -u 1000 -s /bin/bash dev && passwd -d dev
+ 
+RUN chown -R dev:dev /app/code-server && \
+    chmod -R +x /app/code-server/bin
+ 
+# Create a workspace folder owned by dev
+RUN mkdir -p /home/dev/workspace && chown -R dev:dev /home/dev
+ 
 USER dev
-# RUN code-server --install-extension PedroVinciusGalloMenegasso.dark-violet-theme-vscode
-WORKDIR /home/dev
+WORKDIR /home/dev/workspace
 EXPOSE 8080
-CMD ["/app/code-server/bin/code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none", "."]
+CMD ["/app/code-server/bin/code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none", "/home/dev/workspace"]

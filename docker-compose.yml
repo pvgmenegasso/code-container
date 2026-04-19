@@ -8,10 +8,14 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./container-home:/home/dev:z
+      - ./container-home:/home/dev/workspace:z
+      - code-container-data:home/dev/.local
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8080/ || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
+
+volumes:
+  code-container-data
