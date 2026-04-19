@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source="https://github.com/pvgmenegasso/code-cont
 LABEL org.opencontainers.image.licenses="MIT"
 ARG CODE_RELEASE
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y curl git build-essential
+RUN apt-get update && apt-get install -y curl git build-essential sudo
 
 # Install code-server (official standalone server)
 RUN if [ -z ${CODE_RELEASE+x} ]; then \
@@ -28,9 +28,6 @@ RUN if [ -z ${CODE_RELEASE+x} ]; then \
     /var/lib/apt/lists/* \
     /var/tmp/*
 
-# RUN curl -fsSL https://code-server.dev/install.sh | sh
-# RUN curl -fsSL https://github.com/coder/code-server/releases/download/latest/code-server-4.116.0-linux-amd64.tar.gz
-# RUN tar -xvf 
 # Create a non-root user
 RUN useradd -m -u 1000 dev && passwd -d dev && adduser dev sudo
 RUN chown -R dev /app/code-server
