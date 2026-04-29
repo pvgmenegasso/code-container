@@ -3,7 +3,6 @@
 IMAGE := pvgm/code-container:local
 
 fix-perms:
-	sudo chown -R 1000:1000 ./container-home
 	podman unshare chown -R 1000:1000 container-home
 
 build:
