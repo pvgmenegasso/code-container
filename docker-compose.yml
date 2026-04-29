@@ -16,6 +16,12 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+  obsidian:
+    image: docker.io/linuxserver/obsidian
+    ports:
+      - "3001:3001"
+    volumes:
+      - code-container-data:/home/
 
 volumes:
   code-container-data:
