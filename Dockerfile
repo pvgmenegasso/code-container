@@ -36,7 +36,9 @@ RUN chown -R dev:dev /app/code-server && \
     chmod -R +x /app/code-server/bin
  
 # Create a workspace folder owned by dev
-RUN mkdir -p /home/dev/workspace && chown -R dev:dev /home/dev
+RUN mkdir -p /home/dev/workspace && chown -R dev /home/dev
+RUN chmod +rw /home/dev
+
  
 USER dev
 WORKDIR /home/dev/workspace
