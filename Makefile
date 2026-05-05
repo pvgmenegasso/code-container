@@ -1,6 +1,9 @@
 .PHONY: status build up down restart clean fix-perms purge
 
 IMAGE := pvgm/code-container:local
+LOCAL_USER := $(shell id -u)
+LOCAL_GROUP := $(shell id -g)
+
 
 status:
 	@echo
@@ -61,8 +64,8 @@ status:
 	@echo -----------------------------------------------------------------------------
 	@echo
 fix-perms:
-	chown -R $USER:$GROUP container-home
-	podman unshare chown -R 1000:1000 container-home
+	sudo chown -R $(LOCAL_USER):$(LOCAL_GROUP) container-home
+	podman unshare chown -R "$(LOCAL_USER)":"$(LOCAL_GROUP)" container-home
 
 build:
 	podman compose build
