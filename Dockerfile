@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source="https://github.com/pvgmenegasso/code-cont
 LABEL org.opencontainers.image.licenses="MIT"
 ARG CODE_RELEASE
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y curl git build-essential
+RUN apt-get update && apt-get install -y curl git build-essential python3 python3-pip python3-venv
 
 # Install code-server (official standalone server)
 RUN if [ -z ${CODE_RELEASE+x} ]; then \
