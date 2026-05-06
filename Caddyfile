@@ -1,0 +1,7 @@
+code-container.localhost {
+  reverse_proxy code:8080
+}
+
+obsidian.localhost {
+  reverse_proxy obsidian:3000
+}
