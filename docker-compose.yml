@@ -1,12 +1,20 @@
 version: "3.8"
 services:
+  caddy:
+    image: docker.io/caddy
+    ports: 
+      - "8443:443"
+      - "8080:80" 
+    volumes: 
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - proxy
+
   code:
     image: pvgm/code-container:local
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
     volumes:
       - ./container-home:/home/dev/workspace:z
       - code-container-data:/home/dev/.local
@@ -18,10 +26,12 @@ services:
       retries: 3
   obsidian:
     image: docker.io/linuxserver/obsidian
-    ports:
-      - "3001:3001"
     volumes:
       - code-container-data:/home/
-
+ 
 volumes:
   code-container-data:
+
+networks:
+  proxy:
+
